@@ -126,12 +126,18 @@ public class Game {
     public void removeCardFromTable(Coordinates coords) {
         for (int j = coords.getY(); j < 4; j++) {
             this.table[coords.getX()][j] = this.table[coords.getX()][j + 1];
-            if (this.table[coords.getX()][j] != null) {
-                this.table[coords.getX()][j].setCoords(coords.getX(),j);
-            }
         }
         // mereu ultimul element de pe rand va deveni null
         this.table[coords.getX()][4] = null;
+
+        // reactualizez coordonatele
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (table[i][j] != null) {
+                    table[i][j].setCoords(i, j);
+                }
+            }
+        }
 
     }
 

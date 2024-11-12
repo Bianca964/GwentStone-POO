@@ -632,9 +632,9 @@
     "mana" : 1,
     "attackDamage" : 0,
     "health" : 5,
-    "description" : "Standard card: Everything is sacred to him, all is but a gift from the saints.",
-    "colors" : [ "Green", "Yellow", "Blue" ],
-    "name" : "Disciple"
+    "description" : "Standard card: Thrown from the highest cliff, revenge will be his glory.",
+    "colors" : [ "Pink", "Purple" ],
+    "name" : "The Cursed One"
   }
 }, {
   "command" : "getPlayerMana",
@@ -687,9 +687,9 @@
     "mana" : 1,
     "attackDamage" : 0,
     "health" : 5,
-    "description" : "Standard card: Everything is sacred to him, all is but a gift from the saints.",
-    "colors" : [ "Green", "Yellow", "Blue" ],
-    "name" : "Disciple"
+    "description" : "Standard card: Thrown from the highest cliff, revenge will be his glory.",
+    "colors" : [ "Pink", "Purple" ],
+    "name" : "The Cursed One"
   }
 }, {
   "command" : "getFrozenCardsOnTable",
@@ -720,9 +720,9 @@
     "mana" : 1,
     "attackDamage" : 0,
     "health" : 6,
-    "description" : "Standard card: Everything is sacred to him, all is but a gift from the saints.",
-    "colors" : [ "Green", "Yellow", "Blue" ],
-    "name" : "Disciple"
+    "description" : "Standard card: Thrown from the highest cliff, revenge will be his glory.",
+    "colors" : [ "Pink", "Purple" ],
+    "name" : "The Cursed One"
   }
 }, {
   "gameEnded" : "Player two killed the enemy hero."
@@ -732,9 +732,9 @@
     "mana" : 1,
     "attackDamage" : 0,
     "health" : 6,
-    "description" : "Standard card: Everything is sacred to him, all is but a gift from the saints.",
-    "colors" : [ "Green", "Yellow", "Blue" ],
-    "name" : "Disciple"
+    "description" : "Standard card: Thrown from the highest cliff, revenge will be his glory.",
+    "colors" : [ "Pink", "Purple" ],
+    "name" : "The Cursed One"
   }, {
     "mana" : 1,
     "attackDamage" : 6,
