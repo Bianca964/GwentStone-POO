@@ -131,7 +131,7 @@ public class InitGame {
             } else if (game.getPlayerTwo().getTurn()) {
                 game.getPlayerTwo().setEndedTurn(true);
             }
-            game.defrostCards();
+            game.defrostCards(game.getCurrentPlayer());
 
             // se termina o runda
             if (game.getPlayerOne().hasEndedTurn() && game.getPlayerTwo().hasEndedTurn()) {

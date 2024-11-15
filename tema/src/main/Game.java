@@ -1,25 +1,22 @@
 package main;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.Coordinates;
 
 import java.util.Collections;
 import java.util.Random;
 
-public class Game {
+public class Game extends Table {
     private Player playerOne;
     private Player playerTwo;
     private int currentPlayer; // 1 pentru playerOne, 2 pentru playerTwo
-    private Minion[][] table;
     private int currRound;
 
     public Game(Player playerOne, Player playerTwo, int shuffleSeed) {
+        // constructor pentru table
+        super();
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
         this.currentPlayer = playerOne.getTurn() ? 1 : 2;
-        this.table = new Minion[4][5];
         this.currRound = 0;
 
         Collections.shuffle(playerOne.getDeck(), new Random(shuffleSeed));
@@ -58,87 +55,13 @@ public class Game {
         playerTwo.setHeroHasAttacked(false);
     }
 
-    public void markCardsHasNotAttacked() {
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 5; j++) {
-                if (table[i][j] != null) {
-                    table[i][j].setHasAttacked(false);
-                }
-            }
-        }
-    }
-
-    public void defrostCards() {
-        int i;
-        if (currentPlayer == 1) {
-            i = 2;
-        } else {
-            i = 0;
-        }
-        int maxI = i + 2;
-
-        // caut cartile frozen de pe randurile jucatorului curent
-        for (;i < maxI; i++) {
-            for (int j = 0; j < 5; j++) {
-                if (table[i][j] != null && table[i][j].isFrozen()) {
-                    table[i][j].setFrozen(false);
-                }
-            }
-        }
-    }
-
     public void placeCardOnTable(int handIdx) throws Exception {
         // verific al cui e randul ca sa stiu cu ce jucator lucrez
         if (playerOne.getTurn()) {
-            playerOne.placeCardFromHandOnTable(handIdx, this.table, 2, 3);
+            playerOne.placeCardFromHandOnTable(handIdx, this.getTable(), 2, 3);
         } else {
-            playerTwo.placeCardFromHandOnTable(handIdx, this.table, 1, 0);
+            playerTwo.placeCardFromHandOnTable(handIdx, this.getTable(), 1, 0);
         }
-    }
-
-    public Minion getCardsFromTableWithCoords(Coordinates coords) {
-        return this.table[coords.getX()][coords.getY()];
-    }
-
-    public Minion existsTankOnEnemyRows(int enemy) {
-        if (enemy == 1) {
-            // caut pe randul 2 al tablei
-            for (int j = 0; j < 5; j++) {
-                if (table[2][j] != null) {
-                    if (table[2][j].getCardInfo().getName().equals("Goliath") || table[2][j].getCardInfo().getName().equals("Warden")) {
-                        return table[2][j];
-                    }
-                }
-            }
-            return null;
-        }
-        // enemy = 2 : caut pe randul 1 al tablei
-        for (int j = 0; j < 5; j++) {
-            if (table[1][j] != null) {
-                if (table[1][j].getCardInfo().getName().equals("Goliath") || table[1][j].getCardInfo().getName().equals("Warden")) {
-                    return table[1][j];
-                }
-            }
-        }
-        return null;
-    }
-
-    public void removeCardFromTable(Coordinates coords) {
-        for (int j = coords.getY(); j < 4; j++) {
-            this.table[coords.getX()][j] = this.table[coords.getX()][j + 1];
-        }
-        // mereu ultimul element de pe rand va deveni null
-        this.table[coords.getX()][4] = null;
-
-        // reactualizez coordonatele
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 5; j++) {
-                if (table[i][j] != null) {
-                    table[i][j].setCoords(i, j);
-                }
-            }
-        }
-
     }
 
     public void attackCard(Coordinates coordsCardAttacker, Coordinates coordsCardAttacked) throws Exception {
@@ -251,6 +174,8 @@ public class Game {
         cardAttacker.setHasAttacked(true);
     }
 
+
+
     public void attackHero(Coordinates coordsCardAttacker) throws Exception {
         Minion cardAttacker = getCardsFromTableWithCoords(coordsCardAttacker);
         int attackerIdx = cardAttacker.cardBelongsToPlayer();
@@ -293,21 +218,7 @@ public class Game {
         cardAttacker.setHasAttacked(true);
     }
 
-    public void destroyCardWithMaxHealthFromRow(int row) {
-        if (table[row][0] == null) {
-            return;
-        }
-        Coordinates coordsCardWithMaxHealth = table[row][0].getCoords();
-        for (int j = 1; j < 5; j++) {
-            if (table[row][j] != null) {
-                if ((table[row][j]).getHealth() > (table[row][coordsCardWithMaxHealth.getY()]).getHealth()) {
-                    coordsCardWithMaxHealth.setY(j);
-                }
-            }
-        }
-        // distrug cartea de la pozitia gasita
-        removeCardFromTable(coordsCardWithMaxHealth);
-    }
+
 
     public void useHeroAbility(int affectedRow, Player player) throws Exception {
         if (player.getMana() < player.getHero().getCardInfo().getMana()) {
@@ -330,8 +241,10 @@ public class Game {
         if (player.getHero().isLordRoyce()) {
             // inghet toate cartile de pe affectedRow
             for(int j = 0; j < 5; j++) {
-                if (table[affectedRow][j] != null) {
-                    table[affectedRow][j].setFrozen(true);
+                if (this.getMinionFromTable(affectedRow, j) != null) {
+                    //table[affectedRow][j].setFrozen(true);
+                    this.getMinionFromTable(affectedRow, j).setFrozen(true);
+
                 }
             }
         }
@@ -342,17 +255,17 @@ public class Game {
 
         if (player.getHero().isKingMudface()) {
             for (int j = 0; j < 5; j++) {
-                if (table[affectedRow][j] != null) {
-                    table[affectedRow][j].increaseHealth(1);
+                if (this.getMinionFromTable(affectedRow, j) != null) {
+                    this.getMinionFromTable(affectedRow, j).increaseHealth(1);
                 }
             }
         }
 
         if (player.getHero().isGeneralKocioraw()) {
             for (int j = 0; j < 5; j++) {
-                if (table[affectedRow][j] != null) {
-                    int newAttackDamage = table[affectedRow][j].getAttackDamage() + 1;
-                    table[affectedRow][j].setAttackDamage(newAttackDamage);
+                if (this.getMinionFromTable(affectedRow, j) != null) {
+                    int newAttackDamage = this.getMinionFromTable(affectedRow, j).getAttackDamage() + 1;
+                    this.getMinionFromTable(affectedRow, j).setAttackDamage(newAttackDamage);
                 }
             }
         }
@@ -368,55 +281,18 @@ public class Game {
         return currRound;
     }
 
-    public ArrayNode tableTransformToArrayNode(ObjectMapper objectMapper) {
-        ArrayNode tableNode = objectMapper.createArrayNode();
-
-        for (int i = 0; i < table.length; i++) {
-            // Create an ArrayNode to represent the row
-            ArrayNode rowNode = objectMapper.createArrayNode();
-
-            // Iterate through each column in the row
-            for (int j = 0; j < table[i].length; j++) {
-                Minion minion = table[i][j];
-                if (minion != null) {
-                    // Transform the minion into an ObjectNode using a transformation method
-                    ObjectNode minionNode = minion.cardTransformToAnObjectNode(objectMapper);
-                    rowNode.add(minionNode);
-                }
-            }
-
-            // Add the rowNode to the tableNode
-            tableNode.add(rowNode);
-        }
-
-        return tableNode;
-    }
-
-    public ArrayNode frozenCardsToArrayNode(ObjectMapper objectMapper) {
-        ArrayNode tableNode = objectMapper.createArrayNode();
-
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 5; j++) {
-                if (this.table[i][j] != null && this.table[i][j].isFrozen()) {
-                    ObjectNode minionNode = this.table[i][j].cardTransformToAnObjectNode(objectMapper);
-                    tableNode.add(minionNode);
-                }
-            }
-        }
-        return tableNode;
-    }
 
     // Metoda care verifică dacă jocul s-a terminat
-    public boolean isGameEnded() {
-        if (playerOne.getHero().getHealth() <= 0) {
-            playerOne.incrementLoss();
-            playerTwo.incrementWin();
-            return true;
-        } else if (playerTwo.getHero().getHealth() <= 0) {
-            playerTwo.incrementLoss();
-            playerOne.incrementWin();
-            return true;
-        }
-        return false;
-    }
+//    public boolean isGameEnded() {
+//        if (playerOne.getHero().getHealth() <= 0) {
+//            playerOne.incrementLoss();
+//            playerTwo.incrementWin();
+//            return true;
+//        } else if (playerTwo.getHero().getHealth() <= 0) {
+//            playerTwo.incrementLoss();
+//            playerOne.incrementWin();
+//            return true;
+//        }
+//        return false;
+//    }
 }
