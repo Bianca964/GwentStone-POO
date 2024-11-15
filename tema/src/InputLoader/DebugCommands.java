@@ -1,10 +1,12 @@
-package main;
+package InputLoader;
 
 import Cards.Minion;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.ActionsInput;
 import fileio.Coordinates;
+import GameProcess.Game;
+import GameProcess.Player;
 
 public class DebugCommands {
     private final Player playerOne;

@@ -1,7 +1,9 @@
-package main;
+package InputLoader;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.ActionsInput;
+import GameProcess.Game;
+import GameProcess.Player;
 
 public class ActionCommands {
     private final Game game;

@@ -1,10 +1,12 @@
-package main;
+package InputLoader;
 
 import Cards.Hero;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.*;
+import GameProcess.Game;
+import GameProcess.Player;
 
 import java.util.ArrayList;
 

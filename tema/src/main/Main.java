@@ -1,5 +1,6 @@
 package main;
 
+import InputLoader.InitGame;
 import checker.Checker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

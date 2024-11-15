@@ -1,4 +1,4 @@
-package main;
+package GameProcess;
 
 import Cards.Minion;
 import com.fasterxml.jackson.databind.ObjectMapper;
