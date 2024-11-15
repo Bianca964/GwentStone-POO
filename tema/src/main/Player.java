@@ -75,31 +75,28 @@ public class Player {
                 || cardInHand.getCardInfo().getName().equals("Berserker")
                 || cardInHand.getCardInfo().getName().equals("The Cursed One")
                 || cardInHand.getCardInfo().getName().equals("Disciple")) {
-            for (int i = 0; i < 5; i++) {
-                if (table[backRow][i] == null) {
-                    minionCard.setCoords(backRow, i);
-                    table[backRow][i] = minionCard;
-                    this.mana -= cardInHand.getCardInfo().getMana();
-                    cardsInHand.remove(cardInHand);
-                    return; // am reusit sa o plasez  pe masa
-                }
-            }
+            if (addCardOnTableAtSpecificRow(table, backRow, cardInHand, minionCard)) return;
         } else if (cardInHand.getCardInfo().getName().equals("Goliath")
                 || cardInHand.getCardInfo().getName().equals("Warden")
                 || cardInHand.getCardInfo().getName().equals("The Ripper")
                 || cardInHand.getCardInfo().getName().equals("Miraj")) {
-            for (int i = 0; i < 5; i++) {
-                if (table[frontRow][i] == null) {
-                    minionCard.setCoords(frontRow, i);
-                    table[frontRow][i] = minionCard;
-                    this.mana -= cardInHand.getCardInfo().getMana();
-                    cardsInHand.remove(cardInHand);
-                    return; // am reusit sa o plasez  pe masa
-                }
-            }
+            if (addCardOnTableAtSpecificRow(table, frontRow, cardInHand, minionCard)) return; // am reusit sa o plasez  pe masa
         }
 
         throw new Exception("Cannot place card on table since row is full.");
+    }
+
+    private boolean addCardOnTableAtSpecificRow(Minion[][] table, int frontRow, Card cardInHand, Minion minionCard) {
+        for (int i = 0; i < 5; i++) {
+            if (table[frontRow][i] == null) {
+                minionCard.setCoords(frontRow, i);
+                table[frontRow][i] = minionCard;
+                this.mana -= cardInHand.getCardInfo().getMana();
+                cardsInHand.remove(cardInHand);
+                return true;
+            }
+        }
+        return false;
     }
 
     public void incrementMana(int currRound) {
@@ -173,23 +170,9 @@ public class Player {
     public ArrayNode deckTransformToArrayNode(ObjectMapper objectMapper) {
         // Cream un ArrayNode pentru deck-ul actual al jucatorului
         ArrayNode deckNode = objectMapper.createArrayNode();
-        for (CardInput card : deck) {
-            // Transformam CardInput intr-un ObjectNode
-            ObjectNode cardNode = objectMapper.createObjectNode();
-
-            cardNode.put("mana", card.getMana());
-            cardNode.put("attackDamage", card.getAttackDamage());
-            cardNode.put("health", card.getHealth());
-            cardNode.put("description", card.getDescription());
-            if (card.getColors() != null && !card.getColors().isEmpty()) {
-                ArrayNode colorsArray = objectMapper.createArrayNode();
-                for (String color : card.getColors()) {
-                    colorsArray.add(color);
-                }
-                cardNode.set("colors", colorsArray);
-            }
-            cardNode.put("name", card.getName());
-            deckNode.add(cardNode);
+        for (CardInput cardInput : deck) {
+            Card card = new Card(cardInput);
+            deckNode.add(card.cardTransformToAnObjectNode(objectMapper));
         }
         return deckNode;
     }

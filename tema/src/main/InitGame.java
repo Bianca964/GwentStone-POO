@@ -1,7 +1,6 @@
 package main;
 
 import Cards.Hero;
-import Cards.Minion;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;

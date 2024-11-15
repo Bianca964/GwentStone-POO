@@ -45,42 +45,14 @@ public class ActionCommands {
                 try {
                     game.attackCard(actionsInput.getCardAttacker(), actionsInput.getCardAttacked());
                 } catch (Exception e) {
-                    objectNode.put("command", actionsInput.getCommand());
-
-                    // Creăm un ObjectNode pentru coordonatele cardului atacator
-                    ObjectNode cardAttackerNode = objectNode.objectNode();
-                    cardAttackerNode.put("x", actionsInput.getCardAttacker().getX());
-                    cardAttackerNode.put("y", actionsInput.getCardAttacker().getY());
-                    objectNode.set("cardAttacker", cardAttackerNode);
-
-                    // Creăm un ObjectNode pentru coordonatele cardului atacat
-                    ObjectNode cardAttackedNode = objectNode.objectNode();
-                    cardAttackedNode.put("x", actionsInput.getCardAttacked().getX());
-                    cardAttackedNode.put("y", actionsInput.getCardAttacked().getY());
-                    objectNode.set("cardAttacked", cardAttackedNode);
-
-                    objectNode.put("error", e.getMessage());
+                    addCardUsesDetails(objectNode, actionsInput, e);
                 }
             }
             case "cardUsesAbility" -> {
                 try {
                     game.cardUsesAbility(actionsInput.getCardAttacker(), actionsInput.getCardAttacked());
                 } catch (Exception e) {
-                    objectNode.put("command", actionsInput.getCommand());
-
-                    // Creăm un ObjectNode pentru coordonatele cardului atacator
-                    ObjectNode cardAttackerNode = objectNode.objectNode();
-                    cardAttackerNode.put("x", actionsInput.getCardAttacker().getX());
-                    cardAttackerNode.put("y", actionsInput.getCardAttacker().getY());
-                    objectNode.set("cardAttacker", cardAttackerNode);
-
-                    // Creăm un ObjectNode pentru coordonatele cardului atacat
-                    ObjectNode cardAttackedNode = objectNode.objectNode();
-                    cardAttackedNode.put("x", actionsInput.getCardAttacked().getX());
-                    cardAttackedNode.put("y", actionsInput.getCardAttacked().getY());
-                    objectNode.set("cardAttacked", cardAttackedNode);
-
-                    objectNode.put("error", e.getMessage());
+                    addCardUsesDetails(objectNode, actionsInput, e);
                 }
             }
             case "useAttackHero" -> {
@@ -127,5 +99,25 @@ public class ActionCommands {
 
         return true;
     }
+
+    private void addCardUsesDetails(ObjectNode objectNode, ActionsInput actionsInput, Exception e) {
+        objectNode.put("command", actionsInput.getCommand());
+
+        // Add attacker card details
+        ObjectNode cardAttackerNode = objectNode.objectNode();
+        cardAttackerNode.put("x", actionsInput.getCardAttacker().getX());
+        cardAttackerNode.put("y", actionsInput.getCardAttacker().getY());
+        objectNode.set("cardAttacker", cardAttackerNode);
+
+        // Add attacked card details
+        ObjectNode cardAttackedNode = objectNode.objectNode();
+        cardAttackedNode.put("x", actionsInput.getCardAttacked().getX());
+        cardAttackedNode.put("y", actionsInput.getCardAttacked().getY());
+        objectNode.set("cardAttacked", cardAttackedNode);
+
+        // Add error message
+        objectNode.put("error", e.getMessage());
+    }
+
 }
 

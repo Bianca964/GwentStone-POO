@@ -70,7 +70,7 @@ public class DebugCommands {
                 Coordinates coords = new Coordinates(actionsInput.getX(), actionsInput.getY());
                 Minion card = game.getCardsFromTableWithCoords(coords);
                 if (card != null) {
-                    objectNode.put("output", card.cardTransformToAnObjectNode(mapper));
+                    objectNode.set("output", card.cardTransformToAnObjectNode(mapper));
                 } else {
                     objectNode.put("output", "No card available at that position.");
                 }
