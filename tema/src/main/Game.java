@@ -1,8 +1,6 @@
 package main;
 
 import Cards.Minion;
-import Cards.Card;
-import Cards.Hero;
 import fileio.Coordinates;
 
 import java.util.Collections;
@@ -11,7 +9,7 @@ import java.util.Random;
 public class Game extends Table {
     private final Player playerOne;
     private final Player playerTwo;
-    private int currentPlayer; // 1 pentru playerOne, 2 pentru playerTwo
+    private int currentPlayer;
     private int currRound;
 
     public Game(Player playerOne, Player playerTwo, int shuffleSeed) {
@@ -245,9 +243,7 @@ public class Game extends Table {
             // inghet toate cartile de pe affectedRow
             for(int j = 0; j < 5; j++) {
                 if (this.getMinionFromTable(affectedRow, j) != null) {
-                    //table[affectedRow][j].setFrozen(true);
                     this.getMinionFromTable(affectedRow, j).setFrozen(true);
-
                 }
             }
         }
