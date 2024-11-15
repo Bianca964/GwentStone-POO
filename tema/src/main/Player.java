@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.CardInput;
-import fileio.Input;
+import Cards.Card;
+import Cards.Hero;
+import Cards.Minion;
 
 import java.util.ArrayList;
 
@@ -13,7 +15,7 @@ public class Player {
     private int gamesWon;
     private int gamesLost;
     private boolean turn;
-    private int idx;
+    private final int idx;
     private Hero hero;
     private ArrayList<Card> cardsInHand;
     private boolean endedTurnThisRound;
@@ -45,8 +47,7 @@ public class Player {
     }
 
     public void decreaseHeroHealth(int attackDamage) {
-        int newHealth = this.hero.getHealth() - attackDamage;
-        this.hero.setHealth(newHealth);
+        this.hero.decreaseHealth(attackDamage);
     }
 
     public void putCardFromDeckInHand() {
@@ -102,11 +103,7 @@ public class Player {
     }
 
     public void incrementMana(int currRound) {
-        if (currRound >= 10) {
-            this.mana += 10;
-        } else {
-            this.mana += currRound;
-        }
+        this.mana += Math.min(currRound, 10);
     }
 
     public int getMana() {
@@ -126,9 +123,6 @@ public class Player {
         return this.endedTurnThisRound;
     }
 
-    public void setIdx(int idx) {
-        this.idx = idx;
-    }
     public int getIdx() {
         return this.idx;
     }
@@ -140,9 +134,6 @@ public class Player {
         return this.turn;
     }
 
-    public void setDeck(ArrayList<CardInput> deck) {
-        this.deck = deck;
-    }
     public ArrayList<CardInput> getDeck() {
         return this.deck;
     }
@@ -150,16 +141,7 @@ public class Player {
     public int getSuccesses() {
         return this.gamesWon;
     }
-    public void setSuccesses(int gamesWon) {
-        this.gamesWon = gamesWon;
-    }
 
-    public int getLosses() {
-        return this.gamesLost;
-    }
-    public void setLosses(int losses) {
-        this.gamesLost = losses;
-    }
 
     public void incrementWin() {
         this.gamesWon++;

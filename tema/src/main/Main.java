@@ -67,7 +67,7 @@ public final class Main {
         Input inputData = objectMapper.readValue(new File(CheckerConstants.TESTS_PATH + filePath1),
                 Input.class);
 
-        ArrayNode output = objectMapper.createArrayNode();
+        ArrayNode output;
 
         InitGame initGame = new InitGame(inputData);
         initGame.run(inputData);

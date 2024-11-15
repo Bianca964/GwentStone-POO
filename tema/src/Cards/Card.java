@@ -1,4 +1,4 @@
-package main;
+package Cards;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -9,7 +9,7 @@ import fileio.Coordinates;
 public class Card {
     private CardInput cardInfo;
     private boolean frozen;
-    private boolean hasAttacked; // daca cartea a atacat
+    private boolean hasAttacked;
     private Coordinates coords;
 
     public Card() {
@@ -17,11 +17,7 @@ public class Card {
 
     public Card(CardInput card) {
         this.cardInfo = card;
-
-        this.coords = new Coordinates();
-        this.coords.setX(-1);
-        this.coords.setY(-1);
-
+        this.coords = new Coordinates(-1, -1);
         this.frozen = false;
         this.hasAttacked = false;
     }
@@ -77,3 +73,4 @@ public class Card {
         return cardNode;
     }
 }
+

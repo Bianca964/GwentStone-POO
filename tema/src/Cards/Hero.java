@@ -1,11 +1,11 @@
-package main;
+package Cards;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.CardInput;
 
-public class Hero extends Card{
+public class Hero extends Card {
     private int health;
 
     public Hero(CardInput card) {
@@ -27,31 +27,19 @@ public class Hero extends Card{
     }
 
     public boolean isLordRoyce() {
-        if (this.getCardInfo().getName().equals("Lord Royce")) {
-            return true;
-        }
-        return false;
+        return this.getCardInfo().getName().equals("Lord Royce");
     }
 
     public boolean isEmpressThorina() {
-        if (this.getCardInfo().getName().equals("Empress Thorina")) {
-            return true;
-        }
-        return false;
+        return this.getCardInfo().getName().equals("Empress Thorina");
     }
 
     public boolean isGeneralKocioraw () {
-        if (this.getCardInfo().getName().equals("General Kocioraw")) {
-            return true;
-        }
-        return false;
+        return this.getCardInfo().getName().equals("General Kocioraw");
     }
 
     public boolean isKingMudface (){
-        if (this.getCardInfo().getName().equals("King Mudface")) {
-            return true;
-        }
-        return false;
+        return this.getCardInfo().getName().equals("King Mudface");
     }
 
     public ObjectNode heroTransformToAnObjectNode(ObjectMapper objectMapper) {
@@ -80,6 +68,4 @@ public class Hero extends Card{
         heroNode.put("health", getHealth());
         return heroNode;
     }
-
-
 }

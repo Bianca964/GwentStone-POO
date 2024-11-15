@@ -1,12 +1,13 @@
 package main;
 
+import Cards.Minion;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.Coordinates;
 
 public class Table {
-    private Minion[][] table;
+    private final Minion[][] table;
 
     public Table() {
         this.table = new Minion[4][5];
@@ -19,10 +20,6 @@ public class Table {
     public Minion getMinionFromTable(int x, int y) {
         return this.table[x][y];
     }
-    public void setMinionOnTable(int x, int y, Minion minion) {
-        this.table[x][y] = minion;
-    }
-
 
     public void markCardsHasNotAttacked() {
         for (int i = 0; i < 4; i++) {
@@ -136,13 +133,12 @@ public class Table {
     public ArrayNode tableTransformToArrayNode(ObjectMapper objectMapper) {
         ArrayNode tableNode = objectMapper.createArrayNode();
 
-        for (int i = 0; i < table.length; i++) {
+        for (Minion[] minions : table) {
             // Create an ArrayNode to represent the row
             ArrayNode rowNode = objectMapper.createArrayNode();
 
             // Iterate through each column in the row
-            for (int j = 0; j < table[i].length; j++) {
-                Minion minion = table[i][j];
+            for (Minion minion : minions) {
                 if (minion != null) {
                     // Transform the minion into an ObjectNode using a transformation method
                     ObjectNode minionNode = minion.cardTransformToAnObjectNode(objectMapper);

@@ -1,8 +1,8 @@
-package main;
+package Cards;
 
 import fileio.CardInput;
 
-public class Minion extends Card{
+public class Minion extends Card {
 
     public Minion() {
     }

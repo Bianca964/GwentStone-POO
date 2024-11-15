@@ -1,13 +1,16 @@
 package main;
 
+import Cards.Minion;
+import Cards.Card;
+import Cards.Hero;
 import fileio.Coordinates;
 
 import java.util.Collections;
 import java.util.Random;
 
 public class Game extends Table {
-    private Player playerOne;
-    private Player playerTwo;
+    private final Player playerOne;
+    private final Player playerTwo;
     private int currentPlayer; // 1 pentru playerOne, 2 pentru playerTwo
     private int currRound;
 
@@ -280,19 +283,4 @@ public class Game extends Table {
     public int getCurrRound() {
         return currRound;
     }
-
-
-    // Metoda care verifică dacă jocul s-a terminat
-//    public boolean isGameEnded() {
-//        if (playerOne.getHero().getHealth() <= 0) {
-//            playerOne.incrementLoss();
-//            playerTwo.incrementWin();
-//            return true;
-//        } else if (playerTwo.getHero().getHealth() <= 0) {
-//            playerTwo.incrementLoss();
-//            playerOne.incrementWin();
-//            return true;
-//        }
-//        return false;
-//    }
 }

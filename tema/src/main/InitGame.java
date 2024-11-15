@@ -1,5 +1,7 @@
 package main;
 
+import Cards.Hero;
+import Cards.Minion;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -8,12 +10,12 @@ import fileio.*;
 import java.util.ArrayList;
 
 public class InitGame {
-    private Player playerOne;
-    private Player playerTwo;
-    private ArrayList<GameInput> games = new ArrayList<>();
+    private final Player playerOne;
+    private final Player playerTwo;
+    private final ArrayList<GameInput> games;
     private int currGame = 0;
-    private ObjectMapper mapper;
-    private ArrayNode outputArray;
+    private final ObjectMapper mapper;
+    private final ArrayNode outputArray;
 
     public InitGame(Input input) {
         this.games = input.getGames();
@@ -34,14 +36,14 @@ public class InitGame {
 
         ArrayList<CardInput> inputPlayerOneDeck = input.getPlayerOneDecks().getDecks().get(playerOneDeckIdx);
         ArrayList<CardInput> playerOneDeck = new ArrayList<>();
-        for (int j = 0; j < inputPlayerOneDeck.size(); j++) {
-            playerOneDeck.add(new CardInput(inputPlayerOneDeck.get(j)));
+        for (CardInput cardInput : inputPlayerOneDeck) {
+            playerOneDeck.add(new CardInput(cardInput));
         }
 
         ArrayList<CardInput> inputPlayerTwoDeck = input.getPlayerTwoDecks().getDecks().get(playerTwoDeckIdx);
         ArrayList<CardInput> playerTwoDeck = new ArrayList<>();
-        for (int j = 0; j < inputPlayerTwoDeck.size(); j++) {
-            playerTwoDeck.add(new CardInput(inputPlayerTwoDeck.get(j)));
+        for (CardInput cardInput : inputPlayerTwoDeck) {
+            playerTwoDeck.add(new CardInput(cardInput));
         }
 
         this.playerOne = new Player(1, playerOneDeck, hero1, turn1);
@@ -54,190 +56,180 @@ public class InitGame {
     public void debugCommands(Game game, ActionsInput actionsInput, ObjectNode objectNode) {
         objectNode.put("command", actionsInput.getCommand());
 
-        if (actionsInput.getCommand().equals("getPlayerDeck")) {
-            objectNode.put("playerIdx", actionsInput.getPlayerIdx());
-            if (actionsInput.getPlayerIdx() == 1) {
-                objectNode.set("output", playerOne.deckTransformToArrayNode(mapper));
-            } else if (actionsInput.getPlayerIdx() == 2) {
-                objectNode.set("output", playerTwo.deckTransformToArrayNode(mapper));
+        switch (actionsInput.getCommand()) {
+            case "getPlayerDeck" -> {
+                objectNode.put("playerIdx", actionsInput.getPlayerIdx());
+                if (actionsInput.getPlayerIdx() == 1) {
+                    objectNode.set("output", playerOne.deckTransformToArrayNode(mapper));
+                } else if (actionsInput.getPlayerIdx() == 2) {
+                    objectNode.set("output", playerTwo.deckTransformToArrayNode(mapper));
+                }
             }
-
-        } else if (actionsInput.getCommand().equals("getPlayerHero")) {
-            objectNode.put("playerIdx", actionsInput.getPlayerIdx());
-            if (actionsInput.getPlayerIdx() == 1) {
-                objectNode.set("output", playerOne.getHero().heroTransformToAnObjectNode(mapper));
-            } else if (actionsInput.getPlayerIdx() == 2) {
-                objectNode.set("output", playerTwo.getHero().heroTransformToAnObjectNode(mapper));
+            case "getPlayerHero" -> {
+                objectNode.put("playerIdx", actionsInput.getPlayerIdx());
+                if (actionsInput.getPlayerIdx() == 1) {
+                    objectNode.set("output", playerOne.getHero().heroTransformToAnObjectNode(mapper));
+                } else if (actionsInput.getPlayerIdx() == 2) {
+                    objectNode.set("output", playerTwo.getHero().heroTransformToAnObjectNode(mapper));
+                }
             }
-
-        } else if (actionsInput.getCommand().equals("getPlayerTurn")) {
-            if (playerOne.getTurn()) {
-                objectNode.put("output", 1);
-            } else if (playerTwo.getTurn()) {
-                objectNode.put("output", 2);
+            case "getPlayerTurn" -> {
+                if (playerOne.getTurn()) {
+                    objectNode.put("output", 1);
+                } else if (playerTwo.getTurn()) {
+                    objectNode.put("output", 2);
+                }
             }
-
-        } else if (actionsInput.getCommand().equals("getCardsInHand")) {
-            objectNode.put("playerIdx", actionsInput.getPlayerIdx());
-            if (actionsInput.getPlayerIdx() == 1) {
-                objectNode.set("output", playerOne.cardsInHandTransformToArrayNode(mapper));
-            } else {
-                objectNode.set("output", playerTwo.cardsInHandTransformToArrayNode(mapper));
+            case "getCardsInHand" -> {
+                objectNode.put("playerIdx", actionsInput.getPlayerIdx());
+                if (actionsInput.getPlayerIdx() == 1) {
+                    objectNode.set("output", playerOne.cardsInHandTransformToArrayNode(mapper));
+                } else {
+                    objectNode.set("output", playerTwo.cardsInHandTransformToArrayNode(mapper));
+                }
             }
-
-        } else if (actionsInput.getCommand().equals("getPlayerMana")) {
-            objectNode.put("playerIdx", actionsInput.getPlayerIdx());
-            if (actionsInput.getPlayerIdx() == 1) {
-                objectNode.put("output", playerOne.getMana());
-            } else {
-                objectNode.put("output", playerTwo.getMana());
+            case "getPlayerMana" -> {
+                objectNode.put("playerIdx", actionsInput.getPlayerIdx());
+                if (actionsInput.getPlayerIdx() == 1) {
+                    objectNode.put("output", playerOne.getMana());
+                } else {
+                    objectNode.put("output", playerTwo.getMana());
+                }
             }
+            case "getCardsOnTable" -> objectNode.set("output", game.tableTransformToArrayNode(mapper));
+            case "getCardAtPosition" -> {
+                objectNode.put("x", actionsInput.getX());
+                objectNode.put("y", actionsInput.getY());
 
-        } else if (actionsInput.getCommand().equals("getCardsOnTable")) {
-            objectNode.set("output", game.tableTransformToArrayNode(mapper));
-
-        } else if (actionsInput.getCommand().equals("getCardAtPosition")) {
-            objectNode.put("x", actionsInput.getX());
-            objectNode.put("y", actionsInput.getY());
-
-            Coordinates coords = new Coordinates(actionsInput.getX(), actionsInput.getY());
-            Minion card = game.getCardsFromTableWithCoords(coords);
-            if (card != null) {
-                objectNode.put("output", card.cardTransformToAnObjectNode(mapper));
-            } else {
-                objectNode.put("output", "No card available at that position.");
+                Coordinates coords = new Coordinates(actionsInput.getX(), actionsInput.getY());
+                Minion card = game.getCardsFromTableWithCoords(coords);
+                if (card != null) {
+                    objectNode.put("output", card.cardTransformToAnObjectNode(mapper));
+                } else {
+                    objectNode.put("output", "No card available at that position.");
+                }
             }
-        } else if (actionsInput.getCommand().equals("getFrozenCardsOnTable")) {
-            objectNode.set("output", game.frozenCardsToArrayNode(mapper));
-
-        } else if (actionsInput.getCommand().equals("getTotalGamesPlayed")) {
-            objectNode.put("output", currGame + 1);
-
-        } else if (actionsInput.getCommand().equals("getPlayerOneWins")) {
-            objectNode.put("output", playerOne.getSuccesses());
-
-        } else if (actionsInput.getCommand().equals("getPlayerTwoWins")) {
-            objectNode.put("output", playerTwo.getSuccesses());
+            case "getFrozenCardsOnTable" -> objectNode.set("output", game.frozenCardsToArrayNode(mapper));
+            case "getTotalGamesPlayed" -> objectNode.put("output", currGame + 1);
+            case "getPlayerOneWins" -> objectNode.put("output", playerOne.getSuccesses());
+            case "getPlayerTwoWins" -> objectNode.put("output", playerTwo.getSuccesses());
         }
     }
 
     private Boolean actionCommand(final Game game, final ActionsInput actionsInput,
                                   final ObjectNode objectNode) {
-            // END PLAYER TURN
-        if (actionsInput.getCommand().equals("endPlayerTurn")) {
-            // marchez ca si a sfarsit tura
-            if (game.getPlayerOne().getTurn()) {
-                game.getPlayerOne().setEndedTurn(true);
-            } else if (game.getPlayerTwo().getTurn()) {
-                game.getPlayerTwo().setEndedTurn(true);
-            }
-            game.defrostCards(game.getCurrentPlayer());
-
-            // se termina o runda
-            if (game.getPlayerOne().hasEndedTurn() && game.getPlayerTwo().hasEndedTurn()) {
-                game.startNewRound();
-
-                // incrementez mana jucatorilor
-                game.getPlayerOne().incrementMana(game.getCurrRound());
-                game.getPlayerTwo().incrementMana(game.getCurrRound());
-            }
-            game.switchTurn();
-
-            // PLACE CARD (FROM HAND ON TABLE)
-        } else if (actionsInput.getCommand().equals("placeCard")) {
-            int handIdx = actionsInput.getHandIdx();
-            try {
-                game.placeCardOnTable(handIdx);
-            } catch (Exception e) {
-                objectNode.put("command", actionsInput.getCommand());
-                objectNode.put("handIdx", handIdx);
-                objectNode.put("error", e.getMessage());
-            }
-
-            // CARD USES ATTACK
-        } else if (actionsInput.getCommand().equals("cardUsesAttack")) {
-            try {
-                game.attackCard(actionsInput.getCardAttacker(), actionsInput.getCardAttacked());
-            } catch (Exception e) {
-                objectNode.put("command", actionsInput.getCommand());
-
-                // Creăm un ObjectNode pentru coordonatele cardului atacator
-                ObjectNode cardAttackerNode = objectNode.objectNode();
-                cardAttackerNode.put("x", actionsInput.getCardAttacker().getX());
-                cardAttackerNode.put("y", actionsInput.getCardAttacker().getY());
-                objectNode.set("cardAttacker", cardAttackerNode);
-
-                // Creăm un ObjectNode pentru coordonatele cardului atacat
-                ObjectNode cardAttackedNode = objectNode.objectNode();
-                cardAttackedNode.put("x", actionsInput.getCardAttacked().getX());
-                cardAttackedNode.put("y", actionsInput.getCardAttacked().getY());
-                objectNode.set("cardAttacked", cardAttackedNode);
-
-                objectNode.put("error", e.getMessage());
-            }
-
-            // CARD USES ABILITY
-        } else if (actionsInput.getCommand().equals("cardUsesAbility")) {
-            try {
-                game.cardUsesAbility(actionsInput.getCardAttacker(), actionsInput.getCardAttacked());
-            } catch (Exception e) {
-                objectNode.put("command", actionsInput.getCommand());
-
-                // Creăm un ObjectNode pentru coordonatele cardului atacator
-                ObjectNode cardAttackerNode = objectNode.objectNode();
-                cardAttackerNode.put("x", actionsInput.getCardAttacker().getX());
-                cardAttackerNode.put("y", actionsInput.getCardAttacker().getY());
-                objectNode.set("cardAttacker", cardAttackerNode);
-
-                // Creăm un ObjectNode pentru coordonatele cardului atacat
-                ObjectNode cardAttackedNode = objectNode.objectNode();
-                cardAttackedNode.put("x", actionsInput.getCardAttacked().getX());
-                cardAttackedNode.put("y", actionsInput.getCardAttacked().getY());
-                objectNode.set("cardAttacked", cardAttackedNode);
-
-                objectNode.put("error", e.getMessage());
-            }
-
-            // USE ATTACK HERO
-        } else if (actionsInput.getCommand().equals("useAttackHero")) {
-            try {
-                game.attackHero(actionsInput.getCardAttacker());
-            } catch (Exception e) {
-                if (e.getMessage().equals("Player one killed the enemy hero.") || e.getMessage().equals("Player two killed the enemy hero.")) {
-                    objectNode.put("gameEnded", e.getMessage());
-                    return true;
+        switch (actionsInput.getCommand()) {
+            case "endPlayerTurn" -> {
+                // marchez ca si a sfarsit tura
+                if (game.getPlayerOne().getTurn()) {
+                    game.getPlayerOne().setEndedTurn(true);
+                } else if (game.getPlayerTwo().getTurn()) {
+                    game.getPlayerTwo().setEndedTurn(true);
                 }
-                objectNode.put("command", actionsInput.getCommand());
+                game.defrostCards(game.getCurrentPlayer());
 
-                // Creăm un ObjectNode pentru coordonatele cardului atacator
-                ObjectNode cardAttackerNode = objectNode.objectNode();
-                cardAttackerNode.put("x", actionsInput.getCardAttacker().getX());
-                cardAttackerNode.put("y", actionsInput.getCardAttacker().getY());
-                objectNode.set("cardAttacker", cardAttackerNode);
+                // se termina o runda
+                if (game.getPlayerOne().hasEndedTurn() && game.getPlayerTwo().hasEndedTurn()) {
+                    game.startNewRound();
 
-                objectNode.put("error", e.getMessage());
+                    // incrementez mana jucatorilor
+                    game.getPlayerOne().incrementMana(game.getCurrRound());
+                    game.getPlayerTwo().incrementMana(game.getCurrRound());
+                }
+                game.switchTurn();
             }
-
-            // USE HERO ABILITY
-        } else if (actionsInput.getCommand().equals("useHeroAbility")) {
-            int affectedRow = actionsInput.getAffectedRow();
-
-            Player currrentPlayer;
-            if (game.getCurrentPlayer() == 1) {
-                currrentPlayer = game.getPlayerOne();
-            } else {
-                currrentPlayer = game.getPlayerTwo();
+            case "placeCard" -> {
+                int handIdx = actionsInput.getHandIdx();
+                try {
+                    game.placeCardOnTable(handIdx);
+                } catch (Exception e) {
+                    objectNode.put("command", actionsInput.getCommand());
+                    objectNode.put("handIdx", handIdx);
+                    objectNode.put("error", e.getMessage());
+                }
             }
+            case "cardUsesAttack" -> {
+                try {
+                    game.attackCard(actionsInput.getCardAttacker(), actionsInput.getCardAttacked());
+                } catch (Exception e) {
+                    objectNode.put("command", actionsInput.getCommand());
 
-            try {
-                game.useHeroAbility(affectedRow, currrentPlayer);
-            } catch (Exception e) {
-                objectNode.put("command", actionsInput.getCommand());
-                objectNode.put("affectedRow", affectedRow);
-                objectNode.put("error", e.getMessage());
+                    // Creăm un ObjectNode pentru coordonatele cardului atacator
+                    ObjectNode cardAttackerNode = objectNode.objectNode();
+                    cardAttackerNode.put("x", actionsInput.getCardAttacker().getX());
+                    cardAttackerNode.put("y", actionsInput.getCardAttacker().getY());
+                    objectNode.set("cardAttacker", cardAttackerNode);
+
+                    // Creăm un ObjectNode pentru coordonatele cardului atacat
+                    ObjectNode cardAttackedNode = objectNode.objectNode();
+                    cardAttackedNode.put("x", actionsInput.getCardAttacked().getX());
+                    cardAttackedNode.put("y", actionsInput.getCardAttacked().getY());
+                    objectNode.set("cardAttacked", cardAttackedNode);
+
+                    objectNode.put("error", e.getMessage());
+                }
             }
-        } else {
-            return false;
+            case "cardUsesAbility" -> {
+                try {
+                    game.cardUsesAbility(actionsInput.getCardAttacker(), actionsInput.getCardAttacked());
+                } catch (Exception e) {
+                    objectNode.put("command", actionsInput.getCommand());
+
+                    // Creăm un ObjectNode pentru coordonatele cardului atacator
+                    ObjectNode cardAttackerNode = objectNode.objectNode();
+                    cardAttackerNode.put("x", actionsInput.getCardAttacker().getX());
+                    cardAttackerNode.put("y", actionsInput.getCardAttacker().getY());
+                    objectNode.set("cardAttacker", cardAttackerNode);
+
+                    // Creăm un ObjectNode pentru coordonatele cardului atacat
+                    ObjectNode cardAttackedNode = objectNode.objectNode();
+                    cardAttackedNode.put("x", actionsInput.getCardAttacked().getX());
+                    cardAttackedNode.put("y", actionsInput.getCardAttacked().getY());
+                    objectNode.set("cardAttacked", cardAttackedNode);
+
+                    objectNode.put("error", e.getMessage());
+                }
+            }
+            case "useAttackHero" -> {
+                try {
+                    game.attackHero(actionsInput.getCardAttacker());
+                } catch (Exception e) {
+                    if (e.getMessage().equals("Player one killed the enemy hero.") || e.getMessage().equals("Player two killed the enemy hero.")) {
+                        objectNode.put("gameEnded", e.getMessage());
+                        return true;
+                    }
+                    objectNode.put("command", actionsInput.getCommand());
+
+                    // Creăm un ObjectNode pentru coordonatele cardului atacator
+                    ObjectNode cardAttackerNode = objectNode.objectNode();
+                    cardAttackerNode.put("x", actionsInput.getCardAttacker().getX());
+                    cardAttackerNode.put("y", actionsInput.getCardAttacker().getY());
+                    objectNode.set("cardAttacker", cardAttackerNode);
+
+                    objectNode.put("error", e.getMessage());
+                }
+            }
+            case "useHeroAbility" -> {
+                int affectedRow = actionsInput.getAffectedRow();
+
+                Player currrentPlayer;
+                if (game.getCurrentPlayer() == 1) {
+                    currrentPlayer = game.getPlayerOne();
+                } else {
+                    currrentPlayer = game.getPlayerTwo();
+                }
+
+                try {
+                    game.useHeroAbility(affectedRow, currrentPlayer);
+                } catch (Exception e) {
+                    objectNode.put("command", actionsInput.getCommand());
+                    objectNode.put("affectedRow", affectedRow);
+                    objectNode.put("error", e.getMessage());
+                }
+            }
+            default -> {
+                return false;
+            }
         }
 
         return true;
@@ -266,14 +258,14 @@ public class InitGame {
 
                 ArrayList<CardInput> inputPlayerOneDeck = input.getPlayerOneDecks().getDecks().get(playerOneDeckIdx);
                 ArrayList<CardInput> playerOneDeck = new ArrayList<>();
-                for (int j = 0; j < inputPlayerOneDeck.size(); j++) {
-                    playerOneDeck.add(new CardInput(inputPlayerOneDeck.get(j)));
+                for (CardInput cardInput : inputPlayerOneDeck) {
+                    playerOneDeck.add(new CardInput(cardInput));
                 }
 
                 ArrayList<CardInput> inputPlayerTwoDeck = input.getPlayerTwoDecks().getDecks().get(playerTwoDeckIdx);
                 ArrayList<CardInput> playerTwoDeck = new ArrayList<>();
-                for (int j = 0; j < inputPlayerTwoDeck.size(); j++) {
-                    playerTwoDeck.add(new CardInput(inputPlayerTwoDeck.get(j)));
+                for (CardInput cardInput : inputPlayerTwoDeck) {
+                    playerTwoDeck.add(new CardInput(cardInput));
                 }
 
                 playerOne.remake(playerOneDeck, hero1, turn1);
