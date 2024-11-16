@@ -11,7 +11,7 @@ import static gameprocess.Table.TABLE_COLS;
 
 import java.util.ArrayList;
 
-public class Player {
+public final class Player {
     private ArrayList<CardInput> deck;
     private int gamesWon;
     private int gamesLost;

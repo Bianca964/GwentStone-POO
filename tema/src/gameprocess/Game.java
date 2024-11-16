@@ -258,7 +258,6 @@ public class Game extends Table {
         cardAttacker.setHasAttacked(true);
     }
 
-
     /**
      * Executes the hero's special ability on a specific row of the game table
      * The behavior of the ability depends on the type of hero being used
