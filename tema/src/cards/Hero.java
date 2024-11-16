@@ -1,27 +1,30 @@
-package Cards;
+package cards;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.CardInput;
 
-public class Hero extends Card {
+public final class Hero extends Card {
+    public static final int MAX_HEALTH = 30;
     private int health;
 
-    public Hero(CardInput card) {
+    public Hero(final CardInput card) {
         super(card);
-        this.health = 30;
+        this.health = MAX_HEALTH;
     }
 
     public int getHealth() {
         return health;
     }
-
-    public void setHealth(int health) {
+    public void setHealth(final int health) {
         this.health = health;
     }
 
-    public void decreaseHealth(int attackDamage) {
+    /**
+     * Decreases the health of the hero with the attackDamage given
+     */
+    public void decreaseHealth(final int attackDamage) {
         int newHealth = this.health - attackDamage;
         setHealth(newHealth);
     }
@@ -34,27 +37,25 @@ public class Hero extends Card {
         return this.getCardInfo().getName().equals("Empress Thorina");
     }
 
-    public boolean isGeneralKocioraw () {
+    public boolean isGeneralKocioraw() {
         return this.getCardInfo().getName().equals("General Kocioraw");
     }
 
-    public boolean isKingMudface (){
+    public boolean isKingMudface() {
         return this.getCardInfo().getName().equals("King Mudface");
     }
 
-    public ObjectNode heroTransformToAnObjectNode(ObjectMapper objectMapper) {
-        // Creăm un ObjectNode pentru erou
+    /**
+     * Transform a hero card into an objectNode for the json output
+     */
+    public ObjectNode heroTransformToAnObjectNode(final ObjectMapper objectMapper) {
         ObjectNode heroNode = objectMapper.createObjectNode();
+        CardInput cardInfo = this.getCardInfo();
 
-        // Extragem cardInfo din obiectul curent
-        CardInput cardInfo = this.getCardInfo(); // Folosim metoda getCard() pentru a accesa cardInfo
-
-        // Adăugăm informațiile din cardInfo (superclasa Card ar trebui să aibă cardInfo)
         if (cardInfo != null) {
             heroNode.put("mana", cardInfo.getMana());
             heroNode.put("description", cardInfo.getDescription());
 
-            // Adăugăm culorile ca un ArrayNode dacă sunt disponibile
             if (cardInfo.getColors() != null && !cardInfo.getColors().isEmpty()) {
                 ArrayNode colorsArray = objectMapper.createArrayNode();
                 for (String color : cardInfo.getColors()) {
@@ -62,7 +63,6 @@ public class Hero extends Card {
                 }
                 heroNode.set("colors", colorsArray);
             }
-
             heroNode.put("name", cardInfo.getName());
         }
         heroNode.put("health", getHealth());

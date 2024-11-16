@@ -13,7 +13,7 @@ public final class CardInput {
     public CardInput() {
     }
 
-    public CardInput(CardInput cardInput) {
+    public CardInput(final CardInput cardInput) {
         this.mana = cardInput.mana;
         this.attackDamage = cardInput.getAttackDamage();
         this.health = cardInput.health;

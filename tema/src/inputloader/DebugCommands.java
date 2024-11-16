@@ -1,27 +1,37 @@
-package InputLoader;
+package inputloader;
 
-import Cards.Minion;
+import cards.Minion;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.ActionsInput;
 import fileio.Coordinates;
-import GameProcess.Game;
-import GameProcess.Player;
+import gameprocess.Game;
+import gameprocess.Player;
 
-public class DebugCommands {
+public final class DebugCommands {
     private final Player playerOne;
     private final Player playerTwo;
     private final int currGame;
     private final ObjectMapper mapper;
 
-    public DebugCommands(Player playerOne, Player playerTwo, int currGame, ObjectMapper mapper) {
+    public DebugCommands(final Player playerOne, final Player playerTwo,
+                         final int currGame, final ObjectMapper mapper) {
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
         this.currGame = currGame;
         this.mapper = mapper;
     }
 
-    public void execute(Game game, ActionsInput actionsInput, ObjectNode objectNode) {
+    /**
+     * Executes a command based on the input action and modifies the given JSON object
+     * with the result of the operation
+     * @param game the current game instance containing the state and logic of the game
+     * @param actionsInput the input describing the action to be performed, including
+     *                     command and parameters
+     * @param objectNode the JSON object that will be modified to include the command's result
+     */
+    public void execute(final Game game, final ActionsInput actionsInput,
+                        final ObjectNode objectNode) {
         objectNode.put("command", actionsInput.getCommand());
 
         switch (actionsInput.getCommand()) {
@@ -36,9 +46,11 @@ public class DebugCommands {
             case "getPlayerHero" -> {
                 objectNode.put("playerIdx", actionsInput.getPlayerIdx());
                 if (actionsInput.getPlayerIdx() == 1) {
-                    objectNode.set("output", playerOne.getHero().heroTransformToAnObjectNode(mapper));
+                    objectNode.set("output",
+                                    playerOne.getHero().heroTransformToAnObjectNode(mapper));
                 } else if (actionsInput.getPlayerIdx() == 2) {
-                    objectNode.set("output", playerTwo.getHero().heroTransformToAnObjectNode(mapper));
+                    objectNode.set("output",
+                                    playerTwo.getHero().heroTransformToAnObjectNode(mapper));
                 }
             }
             case "getPlayerTurn" -> {
@@ -64,7 +76,8 @@ public class DebugCommands {
                     objectNode.put("output", playerTwo.getMana());
                 }
             }
-            case "getCardsOnTable" -> objectNode.set("output", game.tableTransformToArrayNode(mapper));
+            case "getCardsOnTable" -> objectNode.set("output",
+                                                     game.tableTransformToArrayNode(mapper));
             case "getCardAtPosition" -> {
                 objectNode.put("x", actionsInput.getX());
                 objectNode.put("y", actionsInput.getY());
@@ -77,10 +90,15 @@ public class DebugCommands {
                     objectNode.put("output", "No card available at that position.");
                 }
             }
-            case "getFrozenCardsOnTable" -> objectNode.set("output", game.frozenCardsToArrayNode(mapper));
+            case "getFrozenCardsOnTable" -> objectNode.set("output",
+                                                            game.frozenCardsToArrayNode(mapper));
             case "getTotalGamesPlayed" -> objectNode.put("output", currGame + 1);
             case "getPlayerOneWins" -> objectNode.put("output", playerOne.getSuccesses());
             case "getPlayerTwoWins" -> objectNode.put("output", playerTwo.getSuccesses());
+
+            default -> {
+                return;
+            }
         }
     }
 }

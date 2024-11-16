@@ -1,18 +1,25 @@
-package InputLoader;
+package inputloader;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.ActionsInput;
-import GameProcess.Game;
-import GameProcess.Player;
+import fileio.Coordinates;
+import gameprocess.Game;
+import gameprocess.Player;
 
 public class ActionCommands {
     private final Game game;
 
-    public ActionCommands(Game game) {
+    public ActionCommands(final Game game) {
         this.game = game;
     }
 
-    public boolean execute(ActionsInput actionsInput, ObjectNode objectNode) {
+    /**
+     *
+     * @param actionsInput
+     * @param objectNode
+     * @return
+     */
+    public boolean execute(final ActionsInput actionsInput, final ObjectNode objectNode) {
         switch (actionsInput.getCommand()) {
             case "endPlayerTurn" -> {
                 // marchez ca si a sfarsit tura
@@ -28,8 +35,8 @@ public class ActionCommands {
                     game.startNewRound();
 
                     // incrementez mana jucatorilor
-                    game.getPlayerOne().incrementMana(game.getCurrRound());
-                    game.getPlayerTwo().incrementMana(game.getCurrRound());
+                    game.getPlayerOne().increaseMana(game.getCurrRound());
+                    game.getPlayerTwo().increaseMana(game.getCurrRound());
                 }
                 game.switchTurn();
             }
@@ -45,14 +52,18 @@ public class ActionCommands {
             }
             case "cardUsesAttack" -> {
                 try {
-                    game.attackCard(actionsInput.getCardAttacker(), actionsInput.getCardAttacked());
+                    Coordinates cardAttacker = actionsInput.getCardAttacker();
+                    Coordinates cardAttacked = actionsInput.getCardAttacked();
+                    game.attackCard(cardAttacker, cardAttacked);
                 } catch (Exception e) {
                     addCardUsesDetails(objectNode, actionsInput, e);
                 }
             }
             case "cardUsesAbility" -> {
                 try {
-                    game.cardUsesAbility(actionsInput.getCardAttacker(), actionsInput.getCardAttacked());
+                    Coordinates cardAttacker = actionsInput.getCardAttacker();
+                    Coordinates cardAttacked = actionsInput.getCardAttacked();
+                    game.cardUsesAbility(cardAttacker, cardAttacked);
                 } catch (Exception e) {
                     addCardUsesDetails(objectNode, actionsInput, e);
                 }
@@ -61,7 +72,8 @@ public class ActionCommands {
                 try {
                     game.attackHero(actionsInput.getCardAttacker());
                 } catch (Exception e) {
-                    if (e.getMessage().equals("Player one killed the enemy hero.") || e.getMessage().equals("Player two killed the enemy hero.")) {
+                    if (e.getMessage().equals("Player one killed the enemy hero.")
+                            || e.getMessage().equals("Player two killed the enemy hero.")) {
                         objectNode.put("gameEnded", e.getMessage());
                         return true;
                     }
@@ -98,11 +110,11 @@ public class ActionCommands {
                 return false;
             }
         }
-
         return true;
     }
 
-    private void addCardUsesDetails(ObjectNode objectNode, ActionsInput actionsInput, Exception e) {
+    private void addCardUsesDetails(final ObjectNode objectNode, final ActionsInput actionsInput,
+                                    final Exception e) {
         objectNode.put("command", actionsInput.getCommand());
 
         // Add attacker card details

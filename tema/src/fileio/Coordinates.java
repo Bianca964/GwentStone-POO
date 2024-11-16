@@ -6,12 +6,7 @@ public final class Coordinates {
    public Coordinates() {
    }
 
-   public Coordinates(Coordinates coords) {
-      this.x = coords.x;
-      this.y = coords.y;
-   }
-
-   public Coordinates(int x, int y) {
+   public Coordinates(final int x, final int y) {
       this.x = x;
       this.y = y;
    }
