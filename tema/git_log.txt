@@ -1,0 +1,81 @@
+commit c1acb002a45a0ba27053800a325dc8b5afbd66b8
+Author: Bianca Ioana <biancaioana04@gmail.com>
+Date:   Sun Nov 17 22:39:54 2024 +0200
+
+    Add whole project 100p on Maven skel on the new branch solution-maven
+    
+    Signed-off-by: Bianca Ioana <biancaioana04@gmail.com>
+
+commit 5129a9ea27bfda46d4c5f14c2538bc44455a40c9
+Author: Bianca Ioana <biancaioana04@gmail.com>
+Date:   Sun Nov 17 01:16:35 2024 +0200
+
+    Add README file
+    
+    Signed-off-by: Bianca Ioana <biancaioana04@gmail.com>
+
+commit 2a22c7f4fdb3c020ff491f1e581b6c33ad2dc101
+Author: Bianca Ioana <biancaioana04@gmail.com>
+Date:   Sat Nov 16 20:46:25 2024 +0200
+
+    Made checkstyle
+    Wanted to move the .git file into the tema/ folder so as the checker would give me the points for git, but it modified a lot of things
+    Moved the .git file back (outside the tema/ folder)  and now there appear changes I did not do, like deleting some files and adding them back
+    
+    Signed-off-by: Bianca Ioana <biancaioana04@gmail.com>
+
+commit c19f59645df31f48883b3851eac2555ed7c46f4d
+Author: Bianca Ioana <biancaioana04@gmail.com>
+Date:   Fri Nov 15 19:10:15 2024 +0200
+
+    Created GameProcess and InputLoader packages
+    
+    Signed-off-by: Bianca Ioana <biancaioana04@gmail.com>
+
+commit 7ccd71509ee04446d3c0c6b23c36203a08864f58
+Author: Bianca Ioana <biancaioana04@gmail.com>
+Date:   Fri Nov 15 19:06:48 2024 +0200
+
+    Made minor changes to some methods-before adding new package
+    
+    Signed-off-by: Bianca Ioana <biancaioana04@gmail.com>
+
+commit d8f9a41897e71b2cd6c617ca253a2b87cd6217ec
+Author: Bianca Ioana <biancaioana04@gmail.com>
+Date:   Fri Nov 15 18:07:38 2024 +0200
+
+    Created ActionCommands and DebugCommands classes - refactored InitGame class
+    
+    Signed-off-by: Bianca Ioana <biancaioana04@gmail.com>
+
+commit 762bd9829d42646a0b292ec652baa399c40b9658
+Author: Bianca Ioana <biancaioana04@gmail.com>
+Date:   Fri Nov 15 16:52:53 2024 +0200
+
+    Created package Cards-removed these classes from main package
+    
+    Signed-off-by: Bianca Ioana <biancaioana04@gmail.com>
+
+commit a5a4b0b8c0808878733899b55c3598256995c911
+Author: Bianca Ioana <biancaioana04@gmail.com>
+Date:   Fri Nov 15 15:56:25 2024 +0200
+
+    Add separate Table class
+    
+    Signed-off-by: Bianca Ioana <biancaioana04@gmail.com>
+
+commit 4e359b7240690958e83f4a6b449594cdfde2143a
+Author: Bianca Ioana <biancaioana04@gmail.com>
+Date:   Tue Nov 12 23:52:19 2024 +0200
+
+    Add files: 80p -need checkstyle and Readme
+    
+    Signed-off-by: Bianca Ioana <biancaioana04@gmail.com>
+
+commit f0c79e2df9dd062f8cb9bc7055774856cb1b0f5e
+Author: Bianca Ioana <biancaioana04@gmail.com>
+Date:   Fri Nov 8 01:30:37 2024 +0200
+
+    Added files - 75p (need to debug test 15)
+    
+    Signed-off-by: Bianca Ioana <biancaioana04@gmail.com>

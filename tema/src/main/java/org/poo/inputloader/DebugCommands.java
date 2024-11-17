@@ -47,10 +47,10 @@ public final class DebugCommands {
                 objectNode.put("playerIdx", actionsInput.getPlayerIdx());
                 if (actionsInput.getPlayerIdx() == 1) {
                     objectNode.set("output",
-                                    playerOne.getHero().heroTransformToAnObjectNode(mapper));
+                                    playerOne.getHero().cardTransformToAnObjectNode(mapper));
                 } else if (actionsInput.getPlayerIdx() == 2) {
                     objectNode.set("output",
-                                    playerTwo.getHero().heroTransformToAnObjectNode(mapper));
+                                    playerTwo.getHero().cardTransformToAnObjectNode(mapper));
                 }
             }
             case "getPlayerTurn" -> {

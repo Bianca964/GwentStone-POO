@@ -45,10 +45,8 @@ public final class Hero extends Card {
         return this.getCardInfo().getName().equals("King Mudface");
     }
 
-    /**
-     * Transform a hero card into an objectNode for the json output
-     */
-    public ObjectNode heroTransformToAnObjectNode(final ObjectMapper objectMapper) {
+    @Override
+    public ObjectNode cardTransformToAnObjectNode(final ObjectMapper objectMapper) {
         ObjectNode heroNode = objectMapper.createObjectNode();
         CardInput cardInfo = this.getCardInfo();
 
