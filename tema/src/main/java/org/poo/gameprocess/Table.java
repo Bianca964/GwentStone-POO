@@ -37,7 +37,7 @@ public class Table {
     }
 
     /**
-     * mark all cards on table as "has not attacked"
+     * Marks all cards on table as "has not attacked"
      */
     public void markCardsHasNotAttacked() {
         for (int i = 0; i < TABLE_ROWS; i++) {
@@ -50,7 +50,7 @@ public class Table {
     }
 
     /**
-     * defrost all frozen cards on table of the current player
+     * Defrosts all frozen cards on table of the current player
      * 'i' is initialised to search only on the corresponding rows of the current player
      * @param currentPlayer the player whose cards needs to be defrosted
      */
@@ -102,11 +102,12 @@ public class Table {
                 return minion;
             }
         }
+        // no tank card was found
         return null;
     }
 
     /**
-     * remove a card from the table with the specified coordinates
+     * Removes a card from the table with the specified coordinates
      * @param coords the coordinates of the card to be removed
      */
     public void removeCardFromTable(final Coordinates coords) {
@@ -127,7 +128,7 @@ public class Table {
     }
 
     /**
-     * remove the card which has the highest health from the specified row of the table
+     * Removes the card which has the highest health from the specified row of the table
      * if there are multiple cards with the same health, the first one found is selected
      * @param row the row of the table where the card with the highest health will be destroyed
      */

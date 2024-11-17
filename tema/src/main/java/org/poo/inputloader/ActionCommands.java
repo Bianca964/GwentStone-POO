@@ -14,15 +14,15 @@ public class ActionCommands {
     }
 
     /**
-     *
-     * @param actionsInput
-     * @param objectNode
-     * @return
+     * Executes a game action based on the provided command and updates the game state accordingly
+     * @param actionsInput the input containing the details of the action to execute
+     * @param objectNode the JSON object where the result will be stored
+     * @return true if the command was successfully executed, false if the command was
+     * not recognized
      */
     public boolean execute(final ActionsInput actionsInput, final ObjectNode objectNode) {
         switch (actionsInput.getCommand()) {
             case "endPlayerTurn" -> {
-                // marchez ca si a sfarsit tura
                 if (game.getPlayerOne().getTurn()) {
                     game.getPlayerOne().setEndedTurn(true);
                 } else if (game.getPlayerTwo().getTurn()) {
@@ -30,11 +30,9 @@ public class ActionCommands {
                 }
                 game.defrostCards(game.getCurrentPlayer());
 
-                // se termina o runda
+                // a round has finished
                 if (game.getPlayerOne().hasEndedTurn() && game.getPlayerTwo().hasEndedTurn()) {
                     game.startNewRound();
-
-                    // incrementez mana jucatorilor
                     game.getPlayerOne().increaseMana(game.getCurrRound());
                     game.getPlayerTwo().increaseMana(game.getCurrRound());
                 }
@@ -79,7 +77,6 @@ public class ActionCommands {
                     }
                     objectNode.put("command", actionsInput.getCommand());
 
-                    // Creăm un ObjectNode pentru coordonatele cardului atacator
                     ObjectNode cardAttackerNode = objectNode.objectNode();
                     cardAttackerNode.put("x", actionsInput.getCardAttacker().getX());
                     cardAttackerNode.put("y", actionsInput.getCardAttacker().getY());
@@ -113,6 +110,13 @@ public class ActionCommands {
         return true;
     }
 
+    /**
+     * Adds detailed information about a card usage action to the provided JSON object
+     * @param objectNode the JSON object where the details of the card usage action will be stored
+     * @param actionsInput the input containing the action details
+     * @param e the exception that occurred during the action, whose message will be included in
+     * the JSON object as an error message
+     */
     private void addCardUsesDetails(final ObjectNode objectNode, final ActionsInput actionsInput,
                                     final Exception e) {
         objectNode.put("command", actionsInput.getCommand());
@@ -132,6 +136,4 @@ public class ActionCommands {
         // Add error message
         objectNode.put("error", e.getMessage());
     }
-
 }
-

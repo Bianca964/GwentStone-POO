@@ -1,3 +1,11 @@
+commit 70f7424f49802fbfd38363323ca594ee65f1912c
+Author: Bianca Ioana <biancaioana04@gmail.com>
+Date:   Sun Nov 17 23:16:31 2024 +0200
+
+    Modified a function in Hero - this is the final form of the project
+    
+    Signed-off-by: Bianca Ioana <biancaioana04@gmail.com>
+
 commit c1acb002a45a0ba27053800a325dc8b5afbd66b8
 Author: Bianca Ioana <biancaioana04@gmail.com>
 Date:   Sun Nov 17 22:39:54 2024 +0200
