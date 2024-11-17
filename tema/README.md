@@ -1,42 +1,87 @@
+###### Copyright 2024 Farcasanu Bianca-Ioana 323CA
 
+# GwentStone
+GwenStone is a strategic, turn-based card game where players choose a deck,
+summon minions and utilize powerful heroes to beat their opponents.
+Players must carefully manage resources, deploy cards and attack strategically
+to achieve victory.
 
-# Tema POO  - GwentStone
+## Structure
+The project structure is organised into 5 packages, each serving a specific
+purpose in the implementation of the game:
+1. **cards Package** contains:
+  - class `Card`: The base class representing a generic card. It provides
+    common properties like name, mana cost, frozen status, coordinates etc.
+    It also has an attribute *cardInfo* of type CardInput which contains all details given
+    in input.
+  - class `Hero`: Extends *Card* and adds unique abilities specific to each hero.
+  - class `Minion`: Also extends *Card*, representing creatures summoned to the
+    game table.
+2. **gameprocess Package** handles the gameplay mechanics and player interactions:
+  - class `Table`: Represents the 4x5 game table where cards are placed. It
+    manages the rows and columns associated with each player.
+  - class `Player`: Handles a player's hero, deck, hand, mana, and in-game actions.
+  - class `Game`: Extends *Table* and manages the main gameplay flow, making sure
+    the rules are followed and handling player turns.
+3. **inputloader Package** is responsible for initializing and processing game actions:
+  - class `InitGame`: Acts as the engine of the game. It initializes the game state
+    and processes commands using instances of *ActionCommands* and *DebugCommands* classes.
+  - class `ActionCommands`: Processes all the action commands received in input.
+  - class `DebugCommands`: Processes all the debug commands received in input.
+4. **fileio Package** contains classes in which the input is stored.
+5. **main Package** contains the classes Main and Test that run the program.
 
-<div align="center"><img src="https://tenor.com/view/witcher3-gif-9340436.gif" width="500px"></div>
+## Features
+- Heroes with Unique Abilities: Heroes provide game-changing powers, but require
+  strategic use of mana and timing.
+- Dynamic Minion Cards: Summon and manage a variety of minion cards, each with
+  specific abilities and stats like health, attack, and special effects.
+- Interactive Game Board: Cards are placed on a 4x5 game table with rows divided
+  into front and back for each player. Strategic placement is key.
+- Mana Management: Players gain mana each round, with a cap, requiring careful
+  allocation to play cards or use hero abilities.
+- Win Conditions: Defeat your opponent’s hero to claim victory.
 
-#### Assignment Link: [https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/tema](https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/tema)
+## Classes and Concepts
 
+The whole game can be composed of a series of games as the players can
+restart the game if they want to, but they would be assigned a new hero, a
+different starting player, and also they can choose another deck from their
+own list of decks provided at the beginning of the whole game.
+After choosing a deck, each player can get cards in their hand and place
+them on table afterward.
+The game table is the main place where action takes place. It is a 4x5 grid
+where minions are placed on specific rows, depending on the ability of each
+card. Strategic positioning affects gameplay.
 
-## Skel Structure
+There are different types of cards:
+### Hero
+1. Represents the player's main character.
+2. Heroes have health, mana costs for abilities, and unique effects:
+* Lord Royce: Freezes enemy minions on a targeted row.
+* Empress Thorina: Destroys the strongest enemy minion.
+* King Mudface: Heals allied minions on a targeted row.
+* General Kocioraw: Buffs the attack of allied minions on a targeted row.
 
-* src/
-  * checker/ - checker files
-  * fileio/ - contains classes used to read data from the json files
-  * main/
-      * Main - the Main class runs the checker on your implementation. Add the entry point to your implementation in it. Run Main to test your implementation from the IDE or from command line.
-      * Test - run the main method from Test class with the name of the input file from the command line and the result will be written
-        to the out.txt file. Thus, you can compare this result with ref.
-* input/ - contains the tests in JSON format
-* ref/ - contains all reference output for the tests in JSON format
+### Minion Cards
+1. Represent creatures summoned to the board.
+2. Each minion has attributes like health, attackDamage, abilities (freezing,
+   healing or swapping stats).
 
-## Tests
-
-1. test01_game_start - 4p
-2. test02_place_card - 5p
-3. test03_place_card_invalid - 5p
-4. test04_attack_card - 5p
-5. test05_attack_card_invalid - 5p
-6. test06_use_card_ability - 5p
-7. test07_use_card_ability_invalid - 5p
-8. test08_attack_hero - 5p
-9. test09_attack_hero_invalid - 5p
-10. test10_use_hero_ability_1 - 4p
-11. test11_use_hero_ability_2 - 4p
-12. test12_use_hero_ability_invalid_1 - 4p
-13. test13_use_hero_ability_invalid_2 - 4p
-14. test14_multiple_games_valid - 5p
-15. test15_multiple_games_invalid - 5p
-16. test16_big_game - 10p
-
-
-<div align="center"><img src="https://tenor.com/view/homework-time-gif-24854817.gif" width="500px"></div>
+## Key Methods
+1. *placeCardFromHandOnTable*
+  - Places a card from the player’s hand onto the game table, ensuring
+    mana and row constraints are met.
+2. *cardUsesAbility*
+  - Executes the special ability of a minion, affecting allied or enemy cards.
+3. *attackHero*
+  - Attacks the opponent's hero, checking for any tank cards protecting them.
+4. *useHeroAbility*
+  - Activates the player's hero ability on a specific row, with effects
+    depending on the hero type.
+5. *startNewRound*
+  - Sets up the environment for a new round
+  - Each player gets a new card from their deck
+  - Marks that none of the players has attacked yet
+  - Marks all the cards on the table (minions and heroes included) that they
+    have not been used for attack so far
